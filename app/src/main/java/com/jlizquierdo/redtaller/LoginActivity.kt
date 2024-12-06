@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.jlizquierdo.redtaller.datos.HttpUtils
 import com.jlizquierdo.redtaller.datos.Preferencias
 import com.jlizquierdo.redtaller.datos.HttpUtils as CheckLogin
 
@@ -16,32 +17,51 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val etUsername = findViewById<EditText>(R.id.etUsername)
-        val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
 
         val preferencias = Preferencias()
         val sharedPreferences = preferencias.getEncryptedPreferences(this)
-        val usuario = sharedPreferences.getString("username", null)
-        if (!usuario.isNullOrEmpty()) etUsername.setText(usuario)
+        val usuarioPreferencias = sharedPreferences.getString("username", null)
+        val passwordPreferencias = sharedPreferences.getString("password", null)
+
+        val etUsername = findViewById<EditText>(R.id.etUsername)
+        if (!usuarioPreferencias.isNullOrEmpty()) etUsername.setText(usuarioPreferencias)
+
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        if (!passwordPreferencias.isNullOrEmpty()) etPassword.setText(passwordPreferencias)
 
         btnLogin.setOnClickListener {
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
+            doLogin( etUsername.text.toString(), etPassword.text.toString(), false )
+        }
 
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
-            } else {
-                CheckLogin.check(username, password, this) { success ->
-                    if (success) {
-                        saveCredentials(username,password)
-                        navigateToHome()
-                    } else {
-                        Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
-                    }
+        if (!usuarioPreferencias.isNullOrEmpty() && !passwordPreferencias.isNullOrEmpty())
+        {
+            doLogin( usuarioPreferencias, passwordPreferencias , true )
+        }
+
+    }
+
+    private fun doLogin(username: String, password: String, auto: Boolean)
+    {
+
+        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
+            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
+        } else {
+            var checkPassword = password
+            if ( !auto )
+                checkPassword = HttpUtils.hashPassword(password)
+
+            CheckLogin.check(username, checkPassword, this) { success ->
+                if (success) {
+                    if( !auto )
+                        saveCredentials(username,HttpUtils.hashPassword(password))
+                    navigateToHome()
+                } else {
+                    Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
     }
 
     private fun saveCredentials(username: String, password: String) {

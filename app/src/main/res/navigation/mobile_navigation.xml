@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.jlizquierdo.redtaller.ui.talleres.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_talleres"
+        android:name="com.jlizquierdo.redtaller.ui.talleres.TalleresFragment"
+        android:label="@string/menu_talleres"
+        tools:layout="@layout/fragment_talleres" />
 
     <fragment
         android:id="@+id/nav_slideshow"

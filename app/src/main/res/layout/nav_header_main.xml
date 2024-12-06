@@ -14,13 +14,13 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/redtaller"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/redtaller" />
 
     <TextView
         android:layout_width="match_parent"
@@ -34,4 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_subtitle" />
+
+    <Button
+        android:id="@+id/btnUnSession"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cerrar sesión"
+        android:textColor="@android:color/white"
+        />
+
 </LinearLayout>

@@ -1,8 +1,10 @@
 package com.jlizquierdo.redtaller
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -35,6 +37,8 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null)
                 .setAnchorView(R.id.fab).show()
         }
+        binding.appBarMain.fab.hide()
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
 
@@ -48,18 +52,23 @@ class MainActivity : AppCompatActivity() {
                 val headerView = navView.getHeaderView(0)
                 val usernameTextView = headerView.findViewById<TextView>(R.id.usuarioConectado)
                 usernameTextView.text = nombreCompleto
+                val unSessionButtonUser = headerView.findViewById<Button>(R.id.btnUnSession)
+                unSessionButtonUser.setOnClickListener{
+                    doUnsession()
+                }
             } else {
                 Log.e("HTTP", "Error al obtener cliente o lista vacía")
                 Log.e("HTTP", error.toString())
             }
         }
 
+
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                R.id.nav_home, R.id.nav_talleres, R.id.nav_slideshow
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -68,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        //menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
@@ -76,4 +85,19 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-}
+
+    fun doUnsession() {
+        val preferencias = Preferencias()
+        val sharedPreferences = preferencias.getEncryptedPreferences(this)
+        // Eliminar las preferencias de usuario
+        with(sharedPreferences.edit()) {
+            remove("username")
+            remove("password")
+            apply() // Aplicar los cambios
+        }
+        Snackbar.make(binding.root, "Sesión cerrada correctamente", Snackbar.LENGTH_SHORT).show()
+        // Redirigir al login
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+    }}
