@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
@@ -15,7 +16,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="2"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -26,21 +27,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="redTaller"
+        android:text="@string/redtaller"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/usuarioConectado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nav_header_subtitle" />
+        android:text="@string/nav_header_subtitle"
+        android:textColor="#000000" />
 
     <Button
         android:id="@+id/btnUnSession"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"
+        android:text="@string/cerrar_sesi_n"
         android:textColor="@android:color/white"
-        />
+        tools:ignore="VisualLintButtonSize" />
 
 </LinearLayout>

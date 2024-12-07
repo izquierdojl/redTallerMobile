@@ -10,4 +10,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_talleres">Talleres</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="redtaller">redTaller</string>
+    <string name="cerrar_sesi_n">Cerrar sesión</string>
 </resources>

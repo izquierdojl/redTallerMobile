@@ -3,18 +3,13 @@ package com.jlizquierdo.redtaller.ui.talleres
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.SpannableString
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.jlizquierdo.redtaller.databinding.ListItemTalleresBinding
 import com.jlizquierdo.redtaller.modelo.Taller
-import kotlinx.coroutines.withContext
 
 class TalleresAdapter(private val talleres: List<Taller>) : RecyclerView.Adapter<TalleresAdapter.TallerViewHolder>() {
 

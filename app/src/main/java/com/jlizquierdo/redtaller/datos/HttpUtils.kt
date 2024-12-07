@@ -9,6 +9,9 @@ import com.android.volley.toolbox.Volley
 import android.content.Context
 import android.net.Uri
 import com.android.volley.toolbox.JsonArrayRequest
+import com.jlizquierdo.redtaller.modelo.Actuacion
+import com.jlizquierdo.redtaller.modelo.Cliente
+import com.jlizquierdo.redtaller.modelo.Matricula
 import com.jlizquierdo.redtaller.modelo.Taller
 import org.json.JSONArray
 import java.net.URLEncoder
@@ -19,6 +22,7 @@ object HttpUtils {
 
     private const val API_URL = "https://redtaller.jlizquierdo.com/api/login.php"
     private const val API_URL_TALLERES = "https://redtaller.jlizquierdo.com/api/talleres.php"
+    private const val API_URL_ACTUACIONES = "https://redtaller.jlizquierdo.com/api/actuaciones.php"
     private const val BEARER_URL = "https://redtaller.jlizquierdo.com/security/jwt.php"
 
     fun check(user: String, password: String, context: Context, callback: (Boolean) -> Unit) {
@@ -128,6 +132,71 @@ object HttpUtils {
         }
         return talleresList
     }
+
+    // Método para obtener talleres
+    fun getActuaciones(context: Context, callback: (List<Actuacion>?) -> Unit, user: String, password: String, filter: String) {
+        getBearer(context) { bearer ->
+            if (bearer.isNullOrEmpty()) {
+                callback(null) // Llamada al callback si el bearer es nulo
+                return@getBearer
+            }
+
+            val basicAuth = "Basic ${android.util.Base64.encodeToString("$user:$password".toByteArray(), android.util.Base64.NO_WRAP)}"
+
+            val uriBuilder = Uri.parse(API_URL_ACTUACIONES).buildUpon()
+            if (!filter.isNullOrEmpty()) {
+                uriBuilder.appendQueryParameter("search", filter )
+            }
+            val jsonArrayRequest = object : JsonArrayRequest(Request.Method.GET, uriBuilder.toString(), null,
+                Response.Listener { response ->
+                    try {
+                        val actuaciones = parseActuacionesJson(response.toString()) // Parseo de los talleres
+                        callback(actuaciones) // Llamada al callback con la lista de talleres
+                    } catch (e: Exception) {
+                        Log.e("Actuaciones Error", "Error al procesar la respuesta", e)
+                        callback(null) // En caso de error, callback con null
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Log.e("Actuaciones Error", "Error de conexión", error)
+                    callback(null) // En caso de error en la conexión, callback con null
+                }) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = mutableMapOf<String, String>()
+                    headers["Authorization"] = basicAuth
+                    headers["Token"] = "Bearer $bearer"
+                    return headers
+                }
+            }
+
+            // Obtener la instancia de la cola de solicitudes
+            val requestQueue: RequestQueue = Volley.newRequestQueue(context)
+            requestQueue.add(jsonArrayRequest)
+        }
+    }
+
+    private fun parseActuacionesJson(jsonString: String): List<Actuacion> {
+        val actuacionesList = mutableListOf<Actuacion>()
+        try {
+            val jsonArray = JSONArray(jsonString)
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                val actuacion = Actuacion(
+                    id = jsonObject.getInt("id"),
+                    matricula = Matricula( jsonObject.getString("matricula"), jsonObject.getString("marca"), jsonObject.getString("modelo")),
+                    taller = Taller( nif = jsonObject.getString("nif_taller"), nombre = jsonObject.getString("nom_taller") ),
+                    cliente = Cliente( nif = jsonObject.getString("nif_cliente"), nombre = jsonObject.getString("nom_cliente") ),
+                    km = jsonObject.getInt("km"),
+                    tipo = jsonObject.getString("tipo")
+                )
+                actuacionesList.add(actuacion)
+            }
+        } catch (e: Exception) {
+            Log.e("Actuaciones Error", "Error al procesar el JSON", e)
+        }
+        return actuacionesList
+    }
+
 
     fun getBearer(context: Context, callback: (String?) -> Unit) {
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, BEARER_URL, null,

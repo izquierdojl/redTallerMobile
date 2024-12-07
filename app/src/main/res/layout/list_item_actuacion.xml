@@ -1,0 +1,66 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/round_corners"
+    android:elevation="8dp"
+    android:padding="4dp">
+
+    <ImageView
+        android:id="@+id/foto"
+        android:layout_width="64dp"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_margin="4dp"
+        android:contentDescription="fotografía"
+        android:src="@android:drawable/ic_dialog_info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/vehiculo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Vehículo Actuación"
+        android:textStyle="bold"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintLeft_toRightOf="@+id/foto"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fecha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:text="Fecha Reparación"
+        android:textStyle="normal"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintLeft_toRightOf="@+id/foto"
+        app:layout_constraintTop_toBottomOf="@id/vehiculo" />
+
+    <TextView
+        android:id="@+id/taller"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:text="Taller"
+        android:textStyle="normal"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintLeft_toRightOf="@+id/foto"
+        app:layout_constraintTop_toBottomOf="@id/fecha" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
