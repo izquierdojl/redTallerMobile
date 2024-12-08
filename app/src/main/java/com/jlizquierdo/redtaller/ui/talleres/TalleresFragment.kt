@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.jlizquierdo.redtaller.databinding.FragmentTalleresBinding
 import com.jlizquierdo.redtaller.datos.HttpUtils
 import com.jlizquierdo.redtaller.datos.Preferencias

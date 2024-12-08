@@ -9,12 +9,18 @@ import com.android.volley.toolbox.Volley
 import android.content.Context
 import android.net.Uri
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.StringRequest
 import com.jlizquierdo.redtaller.modelo.Actuacion
+import com.jlizquierdo.redtaller.modelo.Actuacion_Detalle
 import com.jlizquierdo.redtaller.modelo.Cliente
 import com.jlizquierdo.redtaller.modelo.Matricula
 import com.jlizquierdo.redtaller.modelo.Taller
 import org.json.JSONArray
+import org.json.JSONObject
 import java.security.MessageDigest
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object HttpUtils {
 
@@ -176,6 +182,7 @@ object HttpUtils {
     private fun parseActuacionesJson(jsonString: String): List<Actuacion> {
         val actuacionesList = mutableListOf<Actuacion>()
         try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val jsonArray = JSONArray(jsonString)
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
@@ -184,6 +191,7 @@ object HttpUtils {
                     matricula = Matricula( jsonObject.getString("matricula"), jsonObject.getString("marca"), jsonObject.getString("modelo")),
                     taller = Taller( nif = jsonObject.getString("nif_taller"), nombre = jsonObject.getString("nom_taller") ),
                     cliente = Cliente( nif = jsonObject.getString("nif_cliente"), nombre = jsonObject.getString("nom_cliente") ),
+                    fecha = jsonObject.getString("fecha")?.let { dateFormat.parse(it) },
                     km = jsonObject.getInt("km"),
                     tipo = jsonObject.getString("tipo")
                 )
@@ -193,6 +201,109 @@ object HttpUtils {
             Log.e("Actuaciones Error", "Error al procesar el JSON", e)
         }
         return actuacionesList
+    }
+
+    fun getDetallesActuacion( context: Context, actuacionId: Int, callback: (List<Actuacion_Detalle>?) -> Unit, user: String, password: String )
+    {
+        getBearer(context) { bearer ->
+            if (bearer.isNullOrEmpty()) {
+                callback(null) // Callback con null si no se obtiene el token
+                return@getBearer
+            }
+
+            val basicAuth = "Basic ${android.util.Base64.encodeToString("$user:$password".toByteArray(), android.util.Base64.NO_WRAP)}"
+
+            val uriBuilder = Uri.parse("$API_URL_ACTUACIONES/?tipo=detalle&id=$actuacionId").buildUpon()
+
+            val jsonArrayRequest = object : JsonArrayRequest(Request.Method.GET, uriBuilder.toString(), null,
+                Response.Listener { response ->
+                    try {
+                        val detalles = parseActuacionDetallesJson(response.toString())
+                        callback(detalles) // Callback con los detalles
+                    } catch (e: Exception) {
+                        Log.e("Detalles Error", "Error al procesar la respuesta", e)
+                        callback(null) // Callback con null en caso de error
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Log.e("Detalles Error", "Error de conexión", error)
+                    callback(null) // Callback con null en caso de error en la conexión
+                }) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = mutableMapOf<String, String>()
+                    headers["Authorization"] = basicAuth
+                    headers["Token"] = "Bearer $bearer"
+                    return headers
+                }
+            }
+            val requestQueue: RequestQueue = Volley.newRequestQueue(context)
+            requestQueue.add(jsonArrayRequest)
+        }
+    }
+
+    private fun parseActuacionDetallesJson(jsonString: String): List<Actuacion_Detalle> {
+        val detallesList = mutableListOf<Actuacion_Detalle>()
+        try {
+            val jsonArray = JSONArray(jsonString)
+            for (i in 0 until jsonArray.length()) {
+                val actuacionDetalle = Actuacion_Detalle(
+                    id = jsonArray.getJSONObject(i).getInt("id"),
+                    descripcion = jsonArray.getJSONObject(i).getString("descripcion"),
+                    existeImagen = if( jsonArray.getJSONObject(i).getString("existe_imagen").equals("S") ) true else false
+                )
+                detallesList.add(actuacionDetalle)
+            }
+        } catch (e: Exception) {
+            Log.e("DetallesActuacion Error", "Error al procesar el JSON", e)
+        }
+        return detallesList
+    }
+
+    fun getImagenActuacionDetalle(
+        context: Context,
+        detalleId: Int,
+        callback: (String?) -> Unit,
+        user: String,
+        password: String
+    ) {
+        getBearer(context) { bearer ->
+            if (bearer.isNullOrEmpty()) {
+                callback(null) // Si no hay token, devuelve null
+                return@getBearer
+            }
+
+            val basicAuth = "Basic ${android.util.Base64.encodeToString("$user:$password".toByteArray(), android.util.Base64.NO_WRAP)}"
+            val uriBuilder = Uri.parse("$API_URL_ACTUACIONES/?tipo=imagen&id=$detalleId").buildUpon()
+
+            val stringRequest = object : StringRequest(Request.Method.GET, uriBuilder.toString(),
+                Response.Listener { response ->
+                    try {
+                        val jsonArray = JSONArray(response)
+                        val jsonResponse = jsonArray.getJSONObject(0)
+                        val imagenBase64 = jsonResponse.getString("imagen")
+                        // necesario para limpiar carácteres extraños
+                        val imagenBase64Limpia = imagenBase64.replace("\\/", "/")
+                        callback(imagenBase64Limpia)
+                    } catch (e: Exception) {
+                        Log.e("ImagenActuacion Error", "Error al procesar la respuesta", e)
+                        callback(null)
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Log.e("ImagenActuacion Error", "Error en la conexión", error)
+                    callback(null)
+                }) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = mutableMapOf<String, String>()
+                    headers["Authorization"] = basicAuth
+                    headers["Token"] = "Bearer $bearer"
+                    return headers
+                }
+            }
+
+            val requestQueue: RequestQueue = Volley.newRequestQueue(context)
+            requestQueue.add(stringRequest)
+        }
     }
 
 
