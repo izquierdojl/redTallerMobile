@@ -14,8 +14,6 @@ import com.jlizquierdo.redtaller.modelo.Cliente
 import com.jlizquierdo.redtaller.modelo.Matricula
 import com.jlizquierdo.redtaller.modelo.Taller
 import org.json.JSONArray
-import java.net.URLEncoder
-import java.net.URLEncoder.encode
 import java.security.MessageDigest
 
 object HttpUtils {
@@ -65,7 +63,7 @@ object HttpUtils {
         }
     }
 
-    // Método para obtener talleres
+    // Obtener talleres
     fun getTalleres(context: Context, callback: (List<Taller>?) -> Unit, user: String, password: String, filter: String) {
         getBearer(context) { bearer ->
             if (bearer.isNullOrEmpty()) {
@@ -133,7 +131,7 @@ object HttpUtils {
         return talleresList
     }
 
-    // Método para obtener talleres
+    // Obtener actuaciones
     fun getActuaciones(context: Context, callback: (List<Actuacion>?) -> Unit, user: String, password: String, filter: String) {
         getBearer(context) { bearer ->
             if (bearer.isNullOrEmpty()) {

@@ -3,6 +3,7 @@ package com.jlizquierdo.redtaller.ui.actuaciones
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jlizquierdo.redtaller.R
 import com.jlizquierdo.redtaller.databinding.ListItemActuacionBinding
 import com.jlizquierdo.redtaller.modelo.Actuacion
 
@@ -25,6 +26,13 @@ class ActuacionesAdapter(private val actuaciones: List<Actuacion>) : RecyclerVie
             binding.vehiculo.text = actuacion.matricula!!.modelo
             binding.taller.text = actuacion.taller!!.nombre
             binding.fecha.text = actuacion.fecha.toString()
+            when (actuacion.tipo)
+            {
+                "R" -> binding.foto.setImageResource(R.drawable.reparacion)
+                "G" -> binding.foto.setImageResource(R.drawable.garantia)
+                "M" -> binding.foto.setImageResource(R.drawable.mantenimiento)
+                "S" -> binding.foto.setImageResource(R.drawable.accidente)
+            }
         }
     }
 
