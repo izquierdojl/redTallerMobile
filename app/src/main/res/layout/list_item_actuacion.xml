@@ -51,6 +51,19 @@
         app:layout_constraintTop_toBottomOf="@id/vehiculo" />
 
     <TextView
+        android:id="@+id/km"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:text="Km."
+        android:textStyle="normal"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintLeft_toRightOf="@+id/fecha"
+        app:layout_constraintTop_toBottomOf="@id/vehiculo" />
+
+    <TextView
         android:id="@+id/taller"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

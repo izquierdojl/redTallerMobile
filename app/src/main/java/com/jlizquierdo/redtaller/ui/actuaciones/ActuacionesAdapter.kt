@@ -66,6 +66,8 @@ class ActuacionesAdapter(
             binding.vehiculo.text = titulo
             binding.taller.text = actuacion.taller!!.nombre
             binding.fecha.text = actuacion.fecha?.let { dateFormat.format(it) }
+            if( actuacion.km != 0 )
+                binding.km.text = " Km. " + actuacion.km
 
             when (actuacion.tipo) {
                 "R" -> binding.foto.setImageResource(R.drawable.reparacion)
