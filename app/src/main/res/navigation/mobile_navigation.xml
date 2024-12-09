@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_talleres" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.jlizquierdo.redtaller.ui.acercade.SlideshowFragment"
+        android:id="@+id/nav_acercade"
+        android:name="com.jlizquierdo.redtaller.ui.acercade.AcercadeFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_acercade" />
 </navigation>

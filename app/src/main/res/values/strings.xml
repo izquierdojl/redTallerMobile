@@ -9,7 +9,15 @@
 
     <string name="menu_actuaciones">Actuaciones</string>
     <string name="menu_talleres">Talleres</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_slideshow">Acercade</string>
     <string name="redtaller">redTaller</string>
     <string name="cerrar_sesi_n">Cerrar sesión</string>
+
+    <string name="acerca_de_texto">
+    Aplicación desarrollada para el módulo de Proyecto Final del ciclo formativo de Grado Superior de Desarrollo de Aplicaciones Multiplataforma.\n\n
+    Desarrollada por:\n\n
+    José Luis Izquierdo Barberán\n
+    <a href="mailto:jlizquierdo@jlizquierdo.com">jlizquierdo@jlizquierdo.com</a>
+</string>
+
 </resources>

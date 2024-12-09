@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.jlizquierdo.redtaller.databinding.FragmentSlideshowBinding
+import com.jlizquierdo.redtaller.R
+import com.jlizquierdo.redtaller.databinding.FragmentAcercadeBinding
 
-class SlideshowFragment : Fragment() {
+class AcercadeFragment : Fragment() {
 
-    private var _binding: FragmentSlideshowBinding? = null
+    private var _binding: FragmentAcercadeBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,15 +23,15 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this).get(SlideshowViewModel::class.java)
+        val acercadeViewModel =
+            ViewModelProvider(this).get(AcercadeViewModel::class.java)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentAcercadeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        val textView: TextView = binding.textAcercade
+        acercadeViewModel.text.observe(viewLifecycleOwner) {
+            textView.text = getResources().getText(R.string.acerca_de_texto)
         }
         return root
     }
